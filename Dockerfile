@@ -1,9 +1,8 @@
 FROM otel/opentelemetry-collector-contrib:0.149.0
 
-COPY entrypoint.sh /entrypoint.sh
+COPY --chmod=755 entrypoint.sh /entrypoint.sh
 
-USER root
-RUN chmod +x /entrypoint.sh
-USER 1000
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD wget -qO- http://localhost:13133/ || exit 1
 
 ENTRYPOINT ["/entrypoint.sh"]
